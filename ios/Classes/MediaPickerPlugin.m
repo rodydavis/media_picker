@@ -27,7 +27,7 @@ static const int SOURCE_GALLERY = 1;
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
-//  [SwiftMediaPickerPlugin registerWithRegistrar:registrar];
+  [SwiftMediaPickerPlugin registerWithRegistrar:registrar];
   FlutterMethodChannel *channel =
       [FlutterMethodChannel methodChannelWithName:@"media_picker"
                                   binaryMessenger:[registrar messenger]];
