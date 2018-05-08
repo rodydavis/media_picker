@@ -36,82 +36,121 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<File> _mediaFile;
   bool isVideo = false;
-  VideoPlayerController videoController;
-  VoidCallback videoPlayerListener;
+  VideoPlayerController _controller;
+  VoidCallback listener;
 
   void _onImageButtonPressed(ImageSource source) {
     setState(() {
-      _mediaFile = isVideo
-          ? MediaPicker.pickVideo(source: source)
-          : MediaPicker.pickImage(source: source);
+      if (isVideo) {
+        _mediaFile = MediaPicker.pickVideo(source: source);
+      } else {
+        _mediaFile = MediaPicker.pickImage(source: source);
+      }
     });
   }
 
-  Widget _previewWidget(File data) {
-    // File data = await _mediaFile;
-    final VideoPlayerController vcontroller =
-        new VideoPlayerController.file(data);
-    vcontroller.play();
-    vcontroller.setLooping(true);
-    videoPlayerListener = () {
-      if (videoController != null && videoController.value.size != null) {
-        videoController.removeListener(videoPlayerListener);
-        // Refreshing the state to update video player with the correct ratio.
-        if (mounted) setState(() {});
-      }
-    };
-    vcontroller.addListener(videoPlayerListener);
-    vcontroller.initialize().then((onValue) {
-      if (!mounted) {
-        return null;
-      }
-      setState(() {
-        videoController?.dispose();
-        videoController = vcontroller;
-      });
-    });
+  // void _previewVideo(ImageSource source) async {
+  //   _mediaFile = MediaPicker.pickVideo(source: source).then((onFile) {
+  //     if (_controller == null) {
+  //       _controller = VideoPlayerController.file(onFile)
+  //         ..addListener(listener)
+  //         ..setVolume(1.0)
+  //         ..initialize()
+  //         ..setLooping(true)
+  //         ..play();
+  //     } else {
+  //       if (_controller.value.isPlaying) {
+  //         _controller.pause();
+  //       } else {
+  //         _controller.initialize();
+  //         _controller.play();
+  //       }
+  //     }
+  //   });
+  // }
 
-    return videoController == null && data == null
-        ? new Text('Error Loading Data')
-        : new SizedBox(
-            child: (videoController == null)
-                ? new Image.file(data)
-                : new Container(
-                    child: new Center(
-                      child: new AspectRatio(
-                          aspectRatio: videoController.value.size != null
-                              ? videoController.value.aspectRatio
-                              : 1.0,
-                          child: new VideoPlayer(videoController)),
-                    ),
-                    decoration: new BoxDecoration(
-                        border: new Border.all(color: Colors.pink)),
-                  ),
-          );
+  @override
+  void deactivate() {
+    _controller.setVolume(0.0);
+    _controller.removeListener(listener);
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(
+      'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
+    )
+      ..addListener(listener)
+      ..setVolume(1.0)
+      ..initialize()
+      ..setLooping(true)
+      ..play();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget _previewImage = new FutureBuilder<File>(
+      future: _mediaFile,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+          return new Image.file(snapshot.data);
+        } else if (snapshot.error != null) {
+          return const Text('Error picking image.');
+        } else {
+          return const Text('You have not yet picked an image.');
+        }
+      },
+    );
+    Widget _previewVideo = new FutureBuilder<File>(
+      future: _mediaFile,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+              print("File to Play: " + snapshot.data.toString());
+          if (_controller == null) {
+            _controller = VideoPlayerController.file(snapshot.data)
+              ..addListener(listener)
+              ..setVolume(1.0)
+              ..initialize()
+              ..setLooping(true)
+              ..play();
+          } else {
+            if (_controller.value.isPlaying) {
+              _controller.pause();
+            } else {
+              _controller.initialize();
+              _controller.play();
+            }
+          }
+          return new Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: new AspectRatio(
+              aspectRatio: 1280 / 720,
+              child: new VideoPlayer(_controller),
+            ),
+          );
+        } else if (snapshot.error != null) {
+          return const Text('Error picking video.');
+        } else {
+          return const Text('You have not yet picked a video.');
+        }
+      },
+    );
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Media Picker Example'),
       ),
       body: new Center(
-        child: new FutureBuilder<File>(
-          future: _mediaFile,
-          builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.data != null) {
-              return isVideo
-                  ? _previewWidget(snapshot.data)
-                  : new Image.file(snapshot.data);
-            } else if (snapshot.error != null) {
-              return const Text('Error picking image or video.');
-            } else {
-              return const Text('You have not yet picked an image or video.');
-            }
-          },
-        ),
+        child: isVideo ? _previewVideo : _previewImage,
       ),
       floatingActionButton: new Column(
         mainAxisAlignment: MainAxisAlignment.end,

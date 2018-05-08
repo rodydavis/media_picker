@@ -5,6 +5,7 @@ author:
 homepage:
 
 dependencies:
+  path_provider: "^0.4.0"
   flutter:
     sdk: flutter
 

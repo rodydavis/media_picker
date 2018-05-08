@@ -148,7 +148,7 @@ static const int SOURCE_GALLERY = 1;
         NSString *tmpFile = [NSString stringWithFormat:@"media_picker_%@.MOV", guid];
         NSString *tmpDirectory = NSTemporaryDirectory();
         NSString *tmpPath = [tmpDirectory stringByAppendingPathComponent:tmpFile];
- 
+
         if ([[NSFileManager defaultManager] createFileAtPath:tmpPath contents:data attributes:nil]) {
             _result(tmpPath);
         } else {
@@ -156,6 +156,7 @@ static const int SOURCE_GALLERY = 1;
                                         message:@"Temporary file could not be created"
                                         details:nil]);
         }
+//        _result(videoURL);
     } else {
        
         NSData *data = UIImageJPEGRepresentation(image, 1.0);
@@ -171,11 +172,8 @@ static const int SOURCE_GALLERY = 1;
                                         message:@"Temporary file could not be created"
                                         details:nil]);
         }
-    
     }
     
-
-   
   _result = nil;
   _arguments = nil;
 }

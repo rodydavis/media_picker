@@ -2,7 +2,7 @@ name: media_picker_example
 description: Demonstrates how to use the media_picker plugin.
 
 dependencies:
-  path_provider: 0.3.0
+  path_provider: "^0.4.0"
   video_player: "0.5.1"
   flutter:
     sdk: flutter
