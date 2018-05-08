@@ -52,7 +52,7 @@ class MediaPicker {
         'maxHeight': maxHeight,
       },
     );
-
+    print("=> Returned Photo: " + path);
     return path != null ? new File(path) : null;
   }
 
@@ -79,7 +79,7 @@ class MediaPicker {
         'maxHeight': maxHeight,
       },
     );
-
+    print("=> Returned Video: " + path);
     return path != null ? new File(path) : null;
   }
 }
