@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onImageButtonPressed(ImageSource source) {
     setState(() {
-      _imageFile = MediaPicker.pickImage(source: source);
+      _imageFile = MediaPicker.pickVideo(source: source);
     });
   }
 

@@ -2,16 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-@import UIKit;
+//@import UIKit;
 
 #import "MediaPickerPlugin.h"
-#import <media_picker/media_picker-Swift.h>
-
-// @implementation MediaPickerPlugin
-// + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-//   [SwiftMediaPickerPlugin registerWithRegistrar:registrar];
-// }
-// @end
+//#import <media_picker/media_picker-Swift.h>
+#import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @interface MediaPickerPlugin ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @end
@@ -27,7 +23,7 @@ static const int SOURCE_GALLERY = 1;
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
-  [SwiftMediaPickerPlugin registerWithRegistrar:registrar];
+//  [SwiftMediaPickerPlugin registerWithRegistrar:registrar];
   FlutterMethodChannel *channel =
       [FlutterMethodChannel methodChannelWithName:@"media_picker"
                                   binaryMessenger:[registrar messenger]];
@@ -77,6 +73,30 @@ static const int SOURCE_GALLERY = 1;
                                    details:nil]);
         break;
     }
+  } else if ([@"pickVideo" isEqualToString:call.method]) {
+      _imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+      _imagePickerController.delegate = self;
+      _imagePickerController.mediaTypes = @[(NSString*)kUTTypeMovie, (NSString*)kUTTypeAVIMovie, (NSString*)kUTTypeVideo, (NSString*)kUTTypeMPEG4];
+//      _imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+      
+      _result = result;
+      _arguments = call.arguments;
+      
+      int imageSource = [[_arguments objectForKey:@"source"] intValue];
+      
+      switch (imageSource) {
+          case SOURCE_CAMERA:
+              [self showCamera];
+              break;
+          case SOURCE_GALLERY:
+              [self showPhotoLibrary];
+              break;
+          default:
+              result([FlutterError errorWithCode:@"invalid_source"
+                                         message:@"Invalid video source."
+                                         details:nil]);
+              break;
+      }
   } else {
     result(FlutterMethodNotImplemented);
   }
