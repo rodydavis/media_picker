@@ -41,11 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onImageButtonPressed(ImageSource source) {
     setState(() {
+      if (_controller != null) {
+        _controller.setVolume(0.0);
+        _controller.removeListener(listener);
+      }
       if (isVideo) {
-        if (_controller != null) {
-          _controller.setVolume(0.0);
-          _controller.removeListener(listener);
-        }
         _mediaFile = MediaPicker.pickVideo(source: source).then((onValue) {
           _controller = VideoPlayerController.file(onValue)
             ..addListener(listener)
@@ -77,14 +77,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // _controller = VideoPlayerController.network(
-    //   'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
-    // )
-    //   ..addListener(listener)
-    //   ..setVolume(1.0)
-    //   ..initialize();
-    // //   ..setLooping(true)
-    // //   ..play();
     listener = () {
       setState(() {});
     };
