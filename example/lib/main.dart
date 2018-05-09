@@ -4,10 +4,8 @@
 
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -18,8 +16,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Image Picker Demo',
-      home: new MyHomePage(title: 'Image Picker Example'),
+      title: 'Media Picker Demo',
+      home: new MyHomePage(title: 'Media Picker Example'),
     );
   }
 }

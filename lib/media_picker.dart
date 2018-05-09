@@ -7,7 +7,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// Specifies the source where the picked image should come from.
 enum ImageSource {
@@ -53,7 +52,6 @@ class MediaPicker {
         'maxHeight': maxHeight,
       },
     );
-    print("=> Returned Photo: " + path);
     return path != null ? new File(path) : null;
   }
 
@@ -80,8 +78,6 @@ class MediaPicker {
         'maxHeight': maxHeight,
       },
     );
-    print("=> Returned Video: " + path);
-    // return path != null ? new File(Uri.parse(path).toFilePath()) : null;
      return path != null ? new File(path) : null;
   }
 }

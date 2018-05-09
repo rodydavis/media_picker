@@ -156,7 +156,6 @@ static const int SOURCE_GALLERY = 1;
                                         message:@"Temporary file could not be created"
                                         details:nil]);
         }
-//        _result(videoURL);
     } else {
        
         NSData *data = UIImageJPEGRepresentation(image, 1.0);
