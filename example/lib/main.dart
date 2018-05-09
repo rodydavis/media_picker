@@ -42,32 +42,24 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onImageButtonPressed(ImageSource source) {
     setState(() {
       if (isVideo) {
-        _mediaFile = MediaPicker.pickVideo(source: source);
+        if (_controller != null) {
+          _controller.setVolume(0.0);
+          _controller.removeListener(listener);
+        }
+        _mediaFile = MediaPicker.pickVideo(source: source).then((onValue) {
+          _controller = VideoPlayerController.file(onValue)
+            ..addListener(listener)
+            ..setVolume(1.0)
+            ..initialize()
+            ..setLooping(true)
+            ..play();
+          setState(() {});
+        });
       } else {
         _mediaFile = MediaPicker.pickImage(source: source);
       }
     });
   }
-
-  // void _previewVideo(ImageSource source) async {
-  //   _mediaFile = MediaPicker.pickVideo(source: source).then((onFile) {
-  //     if (_controller == null) {
-  //       _controller = VideoPlayerController.file(onFile)
-  //         ..addListener(listener)
-  //         ..setVolume(1.0)
-  //         ..initialize()
-  //         ..setLooping(true)
-  //         ..play();
-  //     } else {
-  //       if (_controller.value.isPlaying) {
-  //         _controller.pause();
-  //       } else {
-  //         _controller.initialize();
-  //         _controller.play();
-  //       }
-  //     }
-  //   });
-  // }
 
   @override
   void deactivate() {
@@ -85,14 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
-    )
-      ..addListener(listener)
-      ..setVolume(1.0)
-      ..initialize()
-      ..setLooping(true)
-      ..play();
+    // _controller = VideoPlayerController.network(
+    //   'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
+    // )
+    //   ..addListener(listener)
+    //   ..setVolume(1.0)
+    //   ..initialize();
+    // //   ..setLooping(true)
+    // //   ..play();
+    listener = () {
+      setState(() {});
+    };
   }
 
   @override
@@ -110,47 +105,25 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       },
     );
-    Widget _previewVideo = new FutureBuilder<File>(
-      future: _mediaFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-              print("File to Play: " + snapshot.data.toString());
-          if (_controller == null) {
-            _controller = VideoPlayerController.file(snapshot.data)
-              ..addListener(listener)
-              ..setVolume(1.0)
-              ..initialize()
-              ..setLooping(true)
-              ..play();
-          } else {
-            if (_controller.value.isPlaying) {
-              _controller.pause();
-            } else {
-              _controller.initialize();
-              _controller.play();
-            }
-          }
-          return new Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: new AspectRatio(
-              aspectRatio: 1280 / 720,
-              child: new VideoPlayer(_controller),
-            ),
-          );
-        } else if (snapshot.error != null) {
-          return const Text('Error picking video.');
-        } else {
-          return const Text('You have not yet picked a video.');
-        }
-      },
-    );
+
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Media Picker Example'),
       ),
       body: new Center(
-        child: isVideo ? _previewVideo : _previewImage,
+        child: isVideo
+            ? new Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: new AspectRatio(
+                  aspectRatio: 1280 / 720,
+                  child: (_controller != null
+                      ? VideoPlayer(
+                          _controller,
+                        )
+                      : Container()),
+                ),
+              )
+            : _previewImage,
       ),
       floatingActionButton: new Column(
         mainAxisAlignment: MainAxisAlignment.end,
