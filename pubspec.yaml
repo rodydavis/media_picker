@@ -1,10 +1,11 @@
 name: media_picker
-description: A Flutter plugin for picking and taking new Photos and Videos.
+description: A Flutter plugin for picking and capturing new Photos and Videos.
 version: 0.0.1
-author:
-homepage:
+author: Rhodes Davis
+homepage: https://www.github.com/AppleEducate/media_picker
 
 dependencies:
+  path_provider: "^0.4.0"
   flutter:
     sdk: flutter
 

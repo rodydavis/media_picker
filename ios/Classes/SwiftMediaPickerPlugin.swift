@@ -9,6 +9,11 @@ public class SwiftMediaPickerPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
+    switch (call.method) {
+    case "pickVideo":
+        result("Selecting Video")
+    default:
+        result(FlutterMethodNotImplemented)
+    }
   }
 }
