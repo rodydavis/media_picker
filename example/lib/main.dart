@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               isVideo = false;
               _onImageButtonPressed(ImageSource.gallery);
             },
+            heroTag: 'image0',
             tooltip: 'Pick Image from gallery',
             child: const Icon(Icons.photo_library),
           ),
@@ -133,6 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 isVideo = false;
                 _onImageButtonPressed(ImageSource.camera);
               },
+              heroTag: 'image1',
               tooltip: 'Take a Photo',
               child: const Icon(Icons.camera_alt),
             ),
@@ -145,6 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 isVideo = true;
                 _onImageButtonPressed(ImageSource.gallery);
               },
+              heroTag: 'video0',
               tooltip: 'Pick Video from gallery',
               child: const Icon(Icons.video_library),
             ),
@@ -157,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 isVideo = true;
                 _onImageButtonPressed(ImageSource.camera);
               },
+              heroTag: 'video1',
               tooltip: 'Take a Video',
               child: const Icon(Icons.videocam),
             ),
