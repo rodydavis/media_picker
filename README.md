@@ -1,5 +1,5 @@
 # media_picker
-![alt text](https://github.com/AppleEducate/app_review/blob/master/screenshots/IMG_0024.PNG)
+![alt text](https://github.com/AppleEducate/media_picker/blob/master/screenshots/Screenshot_20180510-093643.png)
 
 ## Description
 Flutter Plugin for Capturing and Selecting Photos and Videos.
