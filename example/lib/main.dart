@@ -78,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     listener = () {
       setState(() {});
     };
+    // _controller.addListener(listener);
   }
 
   @override
@@ -102,17 +103,18 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Center(
         child: isVideo
-            ? new Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: new AspectRatio(
-                  aspectRatio: 1280 / 720,
-                  child: (_controller != null
-                      ? VideoPlayer(
-                          _controller,
-                        )
-                      : Container()),
-                ),
-              )
+            ? _controller.value.initialized
+                ? new Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: new AspectRatio(
+                      aspectRatio: _controller.value.size.width /
+                          _controller.value.size.height,
+                      child: VideoPlayer(
+                        _controller,
+                      ),
+                    ),
+                  )
+                : Container()
             : _previewImage,
       ),
       floatingActionButton: new Column(
