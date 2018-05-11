@@ -30,6 +30,7 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   Future<File> _mediaFile;
   bool isVideo = false;
@@ -60,14 +61,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void deactivate() {
-    _controller.setVolume(0.0);
-    _controller.removeListener(listener);
+    if (_controller != null) {
+      _controller.setVolume(0.0);
+      _controller.removeListener(listener);
+    }
     super.deactivate();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_controller != null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
