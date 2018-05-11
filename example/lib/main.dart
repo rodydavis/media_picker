@@ -28,9 +28,8 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> {
   Future<File> _mediaFile;
   bool isVideo = false;
@@ -44,8 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _controller.removeListener(listener);
       }
       if (isVideo) {
-        _mediaFile = MediaPicker.pickVideo(source: source).then((onValue) {
-          _controller = VideoPlayerController.file(onValue)
+        _mediaFile = MediaPicker.pickVideo(source: source).then((File _file) {
+          _controller = VideoPlayerController.file(_file)
             ..addListener(listener)
             ..setVolume(1.0)
             ..initialize()
@@ -78,49 +77,55 @@ class _MyHomePageState extends State<MyHomePage> {
     listener = () {
       setState(() {});
     };
-    // _controller.addListener(listener);
+  }
+
+  Widget _previewVideo(VideoPlayerController controller) {
+    if (controller == null) {
+      return const Text('You have not yet picked a video');
+    } else if (controller.value.initialized) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: AspectRatio(
+          aspectRatio:
+              controller.value.size.width / controller.value.size.height,
+          child: VideoPlayer(
+            controller,
+          ),
+        ),
+      );
+    } else {
+      return const Text('Error Loading Video');
+    }
+  }
+
+  Widget _previewImage() {
+    return FutureBuilder<File>(
+        future: _mediaFile,
+        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.data != null) {
+            return Image.file(snapshot.data);
+          } else if (snapshot.error != null) {
+            return const Text('Error picking image.');
+          } else {
+            return const Text('You have not yet picked an image.');
+          }
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget _previewImage = new FutureBuilder<File>(
-      future: _mediaFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-          return new Image.file(snapshot.data);
-        } else if (snapshot.error != null) {
-          return const Text('Error picking image.');
-        } else {
-          return const Text('You have not yet picked an image.');
-        }
-      },
-    );
-
-    return new Scaffold(
-      appBar: new AppBar(
-        title: const Text('Media Picker Example'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: new Center(
-        child: isVideo
-            ? _controller.value.initialized
-                ? new Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: new AspectRatio(
-                      aspectRatio: _controller.value.size.width /
-                          _controller.value.size.height,
-                      child: VideoPlayer(
-                        _controller,
-                      ),
-                    ),
-                  )
-                : Container()
-            : _previewImage,
+      body: Center(
+        child: isVideo ? _previewVideo(_controller) : _previewImage(),
       ),
-      floatingActionButton: new Column(
+      floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          new FloatingActionButton(
+          FloatingActionButton(
             onPressed: () {
               isVideo = false;
               _onImageButtonPressed(ImageSource.gallery);
@@ -129,9 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Pick Image from gallery',
             child: const Icon(Icons.photo_library),
           ),
-          new Padding(
+          Padding(
             padding: const EdgeInsets.only(top: 16.0),
-            child: new FloatingActionButton(
+            child: FloatingActionButton(
               onPressed: () {
                 isVideo = false;
                 _onImageButtonPressed(ImageSource.camera);
@@ -141,9 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.camera_alt),
             ),
           ),
-          new Padding(
+          Padding(
             padding: const EdgeInsets.only(top: 16.0),
-            child: new FloatingActionButton(
+            child: FloatingActionButton(
               backgroundColor: Colors.red,
               onPressed: () {
                 isVideo = true;
@@ -154,9 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.video_library),
             ),
           ),
-          new Padding(
+          Padding(
             padding: const EdgeInsets.only(top: 16.0),
-            child: new FloatingActionButton(
+            child: FloatingActionButton(
               backgroundColor: Colors.red,
               onPressed: () {
                 isVideo = true;
