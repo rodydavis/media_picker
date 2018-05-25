@@ -86,14 +86,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _previewVideo(VideoPlayerController controller) {
     if (controller == null) {
-      return const Text('You have not yet picked a video');
+      return const Text(
+        'You have not yet picked a video',
+        textAlign: TextAlign.center,
+      );
     } else if (controller.value.initialized) {
       return Padding(
         padding: const EdgeInsets.all(10.0),
         child: AspectRatioVideo(controller),
       );
     } else {
-      return const Text('Error Loading Video');
+      return const Text(
+        'Error Loading Video',
+        textAlign: TextAlign.center,
+      );
     }
   }
 
@@ -105,9 +111,15 @@ class _MyHomePageState extends State<MyHomePage> {
               snapshot.data != null) {
             return Image.file(snapshot.data);
           } else if (snapshot.error != null) {
-            return const Text('Error picking image.');
+            return const Text(
+              'Error picking image.',
+              textAlign: TextAlign.center,
+            );
           } else {
-            return const Text('You have not yet picked an image.');
+            return const Text(
+              'You have not yet picked an image.',
+              textAlign: TextAlign.center,
+            );
           }
         });
   }
